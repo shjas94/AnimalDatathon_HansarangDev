@@ -1,0 +1,153 @@
+!!python/object/new:easydict.EasyDict
+state:
+  pose_model: HRNet-W48
+  model_additional_weight: false
+  comment: null
+  result_dir: results/hrnet-train2
+  data_dir: data/ori
+  debug: false
+  seed: 42
+  post_processing: dark
+  use_different_joints_weight: false
+  kpd: 4.0
+  aid: true
+  train: &id011 !!python/object/new:easydict.EasyDict
+    state:
+      max_epochs: 50
+      SAM: false
+      loss_type: hmse
+      finetune: &id004 !!python/object/new:easydict.EasyDict
+        state:
+          do: true
+          step1_epochs: 3
+          step2_epochs: 6
+        dictitems:
+          do: true
+          step1_epochs: 3
+          step2_epochs: 6
+      plus_augment: &id005 !!python/object/new:easydict.EasyDict
+        state:
+          do: true
+          downsample: &id001 !!python/object/new:easydict.EasyDict
+            state:
+              do: true
+              p: 0.2
+              width: 256
+              height: 256
+            dictitems:
+              do: true
+              p: 0.2
+              width: 256
+              height: 256
+          rotate: &id002 !!python/object/new:easydict.EasyDict
+            state:
+              do: true
+              p: 0.4
+              left: true
+              right: true
+            dictitems:
+              do: true
+              p: 0.4
+              left: true
+              right: true
+        dictitems:
+          do: true
+          downsample: *id001
+          rotate: *id002
+      lr: 0.0001
+      scheduler: &id006 !!python/object/new:easydict.EasyDict
+        state:
+          type: ReduceLROnPlateau
+          params: &id003 !!python/object/new:easydict.EasyDict
+            state:
+              factor: 0.5
+              patience: 10
+              verbose: true
+            dictitems:
+              factor: 0.5
+              patience: 10
+              verbose: true
+        dictitems:
+          type: ReduceLROnPlateau
+          params: *id003
+    dictitems:
+      max_epochs: 50
+      SAM: false
+      loss_type: hmse
+      finetune: *id004
+      plus_augment: *id005
+      lr: 0.0001
+      scheduler: *id006
+  dataset: &id012 !!python/object/new:easydict.EasyDict
+    state:
+      train_dir: data/ori/train_imgs
+      target_file: data/ori/train_df.csv
+      target_type: gaussian
+      scale_invariance: false
+      normalize: true
+      mean: &id007
+      - 0.411
+      - 0.42
+      - 0.416
+      std: &id008
+      - 0.307
+      - 0.303
+      - 0.292
+      sigma: 3.0
+      num_joints: 17
+      input_size: &id009
+      - 384
+      - 288
+      batch_size: 16
+      num_cpus: 6
+    dictitems:
+      train_dir: data/ori/train_imgs
+      target_file: data/ori/train_df.csv
+      target_type: gaussian
+      scale_invariance: false
+      normalize: true
+      mean: *id007
+      std: *id008
+      sigma: 3.0
+      num_joints: 17
+      input_size: *id009
+      batch_size: 16
+      num_cpus: 6
+  PERFORMANCE_RECORD: &id013 !!python/object/new:easydict.EasyDict
+    state:
+      column_list: &id010
+      - train_serial
+      - train_timestamp
+      - model_str
+      - optimizer_str
+      - loss_function_str
+      - metric_function_str
+      - early_stopping_patience
+      - batch_size
+      - epoch
+      - learning_rate
+      - momentum
+      - random_seed
+      - epoch_index
+      - train_loss
+      - validation_loss
+      - train_score
+      - validation_score
+      - elapsed_time
+    dictitems:
+      column_list: *id010
+dictitems:
+  pose_model: HRNet-W48
+  model_additional_weight: false
+  comment: null
+  result_dir: results/hrnet-train2
+  data_dir: data/ori
+  debug: false
+  seed: 42
+  post_processing: dark
+  use_different_joints_weight: false
+  kpd: 4.0
+  aid: true
+  train: *id011
+  dataset: *id012
+  PERFORMANCE_RECORD: *id013

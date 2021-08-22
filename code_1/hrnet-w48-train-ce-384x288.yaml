@@ -1,0 +1,73 @@
+pose_model: HRNet-W48
+model_additional_weight: false
+debug: false
+seed: 42
+post_processing: dark
+use_different_joints_weight: False
+kpd: 4.0
+aid: True
+train:
+  max_epochs: 20
+  SAM: false
+  loss_type: hmse # ce, hmse
+  finetune:
+    do: true
+    step1_epochs: 3
+    step2_epochs: 6
+    
+  plus_augment:
+    do: true
+    downsample:
+      do: true
+      p: 0.2
+      width: 256
+      height: 256
+    rotate:
+      do: true
+      p: 0.4
+      left: true
+      right: true
+  
+  # lr: 0.000001
+  lr: 0.0001
+  scheduler:
+    type: ReduceLROnPlateau
+    params:
+      factor: 0.5
+      patience: 10
+      verbose: true
+
+dataset:
+  target_type: gaussian
+  scale_invariance: false
+  normalize: false
+  mean: [0.411, 0.420, 0.416]
+  std: [0.307, 0.303, 0.292]
+  sigma: 3.0
+  num_joints: 17
+  input_size: [384, 288]
+  batch_size: 16
+  num_cpus: 6
+  
+
+
+PERFORMANCE_RECORD:
+  column_list:
+    - train_serial
+    - train_timestamp
+    - model_str
+    - optimizer_str
+    - loss_function_str
+    - metric_function_str
+    - early_stopping_patience
+    - batch_size
+    - epoch
+    - learning_rate
+    - momentum
+    - random_seed # -----------key columns-------------
+    - epoch_index 
+    - train_loss
+    - validation_loss
+    - train_score
+    - validation_score
+    - elapsed_time
